@@ -10,3 +10,17 @@ SELECT DISTINCT
   COUNT(customerkey) OVER(PARTITION BY cohort_year,purchase_year)AS num_of_customers
 FROM yearly_cohort
 ORDER BY cohort_year, purchase_year
+--------------------------------for extracting cx_ltv in terms of cohort year------------------
+%%sql
+WITH yearly_cohort AS(
+  SELECT
+  customerkey,
+  EXTRACT(YEAR FROM MIN(orderdate))AS cohort_year,
+  SUM(quantity*netprice*exchangerate) AS cx_ltv
+  FROM sales
+  GROUP BY customerkey)
+SELECT 
+  *,
+  AVG(cx_ltv) OVER (PARTITION BY cohort_year) AS AVG_CX_LTV
+FROM yearly_cohort
+ORDER BY cohort_year,customerkey
