@@ -24,3 +24,19 @@ SELECT
   AVG(cx_ltv) OVER (PARTITION BY cohort_year) AS AVG_CX_LTV
 FROM yearly_cohort
 ORDER BY cohort_year,customerkey
+------------------------------- calculating running avg count of customers by using order by within window functions -----------------
+%%sql
+SELECT 
+  customerkey,
+  orderdate,
+  quantity*netprice*exchangerate AS net_rev,
+  COUNT(*) OVER(
+    PARTITION BY customerkey
+    ORDER BY orderdate
+  ) AS running_order_count,
+  AVG(quantity*netprice*exchangerate) OVER(
+    PARTITION BY customerkey
+    ORDER BY orderdate
+  ) AS avg_running_order_count
+  
+FROM sales
