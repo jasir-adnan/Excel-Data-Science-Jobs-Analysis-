@@ -74,3 +74,10 @@ SELECT *
 FROM rows
 LIMIT 10
 ------------------------------------------------lag and lead-------------------------------------
+%%sql
+SELECT
+TO_CHAR(orderdate,'YYYY-MM') AS month,
+SUM(quantity*netprice*exchangerate) AS net_revenue
+FROM sales
+GROUP BY month
+ORDER BY month
