@@ -40,3 +40,20 @@ SELECT
   ) AS avg_running_order_count
   
 FROM sales
+--------------------------------------------applying row numbers for each date so we can see how many order were place in a day-----------------------------------
+%%sql
+WITH rows AS(
+  SELECT
+  ROW_NUMBER() OVER(
+  PARTITION BY orderdate
+  ORDER BY
+  orderdate,
+  orderkey,
+  linenumber) AS row_num,
+  *
+  FROM sales)
+SELECT *
+FROM rows
+WHERE orderdate > '2015-01-01'
+LIMIT 10
+
