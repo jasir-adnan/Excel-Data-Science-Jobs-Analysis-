@@ -56,4 +56,21 @@ SELECT *
 FROM rows
 WHERE orderdate > '2015-01-01'
 LIMIT 10
+---------------------------------ranking--------------------
+%%sql
 
+WITH rows AS(
+SELECT
+  customerkey,
+  COUNT(*) AS total_orders,
+  ROW_NUMBER() OVER(ORDER BY COUNT (*) DESC) AS total_orders_row_num,
+  RANK() OVER(ORDER BY COUNT (*) DESC) AS total_orders_rank,
+  DENSE_RANK() OVER(ORDER BY COUNT (*) DESC) AS total_orders_dense_rank
+FROM sales
+GROUP BY customerkey
+
+)
+SELECT *
+FROM rows
+LIMIT 10
+------------------------------------------------lag and lead-------------------------------------
