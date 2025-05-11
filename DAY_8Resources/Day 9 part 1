@@ -81,3 +81,20 @@ SUM(quantity*netprice*exchangerate) AS net_revenue
 FROM sales
 GROUP BY month
 ORDER BY month
+----------------------------------- example-------------
+%%sql
+WITH monthyly_revenue AS(
+  SELECT
+  TO_CHAR(orderdate,'YYYY-MM') AS month,
+  SUM(quantity*netprice*exchangerate) AS net_revenue
+  FROM sales
+  WHERE EXTRACT (YEAR FROM orderdate ) = 2023
+  GROUP BY month
+  ORDER BY month)
+SELECT *,
+FIRST_VALUE(net_revenue) OVER (ORDER BY month) AS first_month_revenue,
+LAG(net_revenue) OVER (ORDER BY month) AS previous_month_revenue,
+LEAD(net_revenue) OVER (ORDER BY month) AS next_month_revenue,
+NTH_VALUE(net_revenue,3) OVER (ORDER BY month) AS third_month_revenue
+FROM monthyly_revenue
+----------------------------to calculate month over month growth using lag------------------------
